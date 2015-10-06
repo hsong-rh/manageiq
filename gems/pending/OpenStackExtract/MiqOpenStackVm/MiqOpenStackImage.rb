@@ -2,16 +2,18 @@ require 'util/miq_tempfile'
 require_relative '../../MiqVm/MiqVm'
 
 class MiqOpenStackImage
+  attr_reader :vmConfigFile
 
-  SUPPORTED_METHODS = [ :vmRootTrees, :extract, :diskInitErrors ]
+  SUPPORTED_METHODS = [:rootTrees, :extract, :diskInitErrors]
 
-	def initialize(image_id, args)
+  def initialize(image_id, args)
     @image_id     = image_id
-    @fog_compute  = args[:fog_compute]
-    @fog_image    = args[:fog_image]
+    @os_handle    = args[:os_handle]
     @args         = args
+    @vmConfigFile = image_id
 
-    raise ArgumentError, "#{self.class.name}: required arg fog_compute missing"  unless @fog_compute
+    raise ArgumentError, "#{self.class.name}: required arg os_handle missing"    unless @os_handle
+    @fog_image    = @os_handle.detect_image_service
     raise ArgumentError, "#{self.class.name}: required arg fog_image missing"    unless @fog_image
   end
 
@@ -28,19 +30,21 @@ class MiqOpenStackImage
       @temp_image_file = get_image_file
       hardware  = "scsi0:0.present = \"TRUE\"\n"
       hardware += "scsi0:0.filename = \"#{@temp_image_file.path}\"\n"
-      MiqVm.new(hardware)
+
+      ost = OpenStruct.new
+      ost.diskFormat =@fog_image.get_image(@image_id).headers['X-Image-Meta-Disk_format']
+      MiqVm.new(hardware, ost)
     end
   end
 
   def get_image_file
     log_pref = "#{self.class.name}##{__method__}"
 
-    cimage = @fog_compute.images.get(@image_id)
-    raise "Image #{@image_id} not found" unless cimage
-    $log.debug "#{log_pref}: cimage = #{cimage.class.name}"
+    image = @fog_image.get_image(@image_id)
+    raise "Image #{@image_id} not found" unless image
 
-    iname = cimage.attributes[:name]
-    isize = cimage.attributes['OS-EXT-IMG-SIZE:size'].to_i
+    iname = image.headers['X-Image-Meta-Name']
+    isize = image.headers['X-Image-Meta-Size'].to_i
     $log.debug "#{log_pref}: iname = #{iname}"
     $log.debug "#{log_pref}: isize = #{isize}"
 
@@ -51,7 +55,7 @@ class MiqOpenStackImage
 
     tf = MiqTempfile.new(iname, :encoding => 'ascii-8bit')
     $log.debug "#{log_pref}: saving image to #{tf.path}"
-    response_block = lambda do |buf, rem, sz|
+    response_block = lambda do |buf, _rem, sz|
       tf.write buf
       tot += buf.length
       $log.debug "#{log_pref}: response_block: #{tot} bytes written of #{sz}"
@@ -64,9 +68,9 @@ class MiqOpenStackImage
     # upstream and modify this code accordingly.
     #
     rv = @fog_image.request(
-      :expects => [200, 204],
-      :method  => 'GET',
-      :path    => "images/#{@image_id}",
+      :expects        => [200, 204],
+      :method         => 'GET',
+      :path           => "images/#{@image_id}",
       :response_block => response_block
     )
 
@@ -82,13 +86,12 @@ class MiqOpenStackImage
       raise "Image download failed"
     end
 
-    return tf
+    tf
   end
 
   def method_missing(sym, *args)
     super unless SUPPORTED_METHODS.include? sym
     return miq_vm.send(sym) if args.empty?
-    return miq_vm.send(sym, args)
+    miq_vm.send(sym, args)
   end
-
 end

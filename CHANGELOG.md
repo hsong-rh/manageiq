@@ -2,109 +2,158 @@
 
 All notable changes to this project will be documented in this file.
 
-# Unreleased
+# Capablanca Alpha 1 Release
 
-## Sprint 26 end 2015-07-13
+## Added Features
 
-### [Added](https://github.com/ManageIQ/manageiq/issues?q=milestone%3A%22Sprint+26+Ending+July+13%2C+2015%22+label%3Aenhancement)
+### Providers
+- Kubernetes
+  - RHEV Integration
+  - Events
+  - Topology Widget
+  - VMware integration
+  - Inventory: Replicators, Routes, Projects
+-  Namespacing
+  - Preparation for pluggable providers
+  - OpenStack, Containers
+- Amazon: Added M4 and t2.large instance types
+- OpenStack
+  - Improved naming for AMQP binding queues
+  - Shelve VMs
+- Foreman: Exposed additional properties to reporting
+- Azure
+  - Initial work for Inventory Collection, OAuth2, [azure-armrest gem](https://github.com/ManageIQ/azure-armrest)
+  - Azure Provider models  
 
-- OpenStack: Flavors for all tenants
-- Containers: Correlate nodes to OpenStack instances
-- Automate: Configurable automate worker added
-- Provisioning: OpenStack Shared Networks
+### Provisioning
+- Filter Service Catalog Items during deployment
+- OpenStack Shared Networks
   - Identified during inventory refresh
   - Available in the Cloud Network drop-down in Provisioning across all OpenStack Tenants
+- Enabled SCVMM Auto placement
+- Provision Dialogs: field validation for non-required fields
+- Service Dialogs: Auto-refresh for dynamic dialog fields
+- Foreman: Filtering of available Configuration Profiles based on selected Configured Systems in provisioning dialog
 
-### [Changed](https://github.com/ManageIQ/manageiq/issues?q=milestone%3A%22Sprint+26+Ending+July+13%2C+2015%22+label%3Aenhancement)
+### User Interface
+- Charting by field values
+- Cloud Provider editor
+  - Converted to Angular
+  - Uses RESTful routes
+- Orchestration: Stacks Retirement added
+- Retirement screens converted to Angular
+- DHTMLX menus replaced with Bootstrap/Patternfly menus
+- Host editor converted to Angular
+- Added donut charts   
 
-- Providers: Namespace changes
-  - app/models/ems\_vmware.rb becomes app/models/manageiq/providers/vmware/infra_manager.rb
-  - app/models/ems\_amazon.rb becomes app/models/manageiq/providers/amazon/cloud_manager.rb
-- UI: Technical Debt Progress
-  - Started replacing DHTMLX controls
-  - Remaining TreePresenter/ExplorerPresenter conversions in progress
-  - Switched from Patternfly LESS to SASS
-- UI: Updates
-  - Ongoing Patternfly styling
-  - Schedule Editor update
-- Automate: State Machine
+### Tenancy
+- Model - new Tenant model associations
+ - Automate domains
+ - Service Catalogs
+ - Catalog Items
+- Assign existing records to root tenant Provider, Automate Domain, Group, TenantQuota, Vm
+- New Automate Service Models
+ - Tenant
+ - TenantQuota
+- UI
+ - RBAC and Roles - Access Roles features exposed
+ - Quota Management
+
+### REST API
+- Querying Service Template images
+- Querying Resource Actions as a formal subcollection of service_templates
+- Querying Service Dialogs
+- Querying Provision Dialogs
+- Ability to import reports
+- Roles CRUD
+- Product features collection
+- Chargeback Rates CRUD
+- Reports run action
+- Report results collection
+
+### Automate
+
+- Automate Server Role enabled by default
+- Configurable Automate Worker added
+- State Machine
+  - Multiple state machine support
   - Allow for a state to be skipped (on_entry)
   - Allow for continuation of a state machine in case of errors (on_error)
   - Allow methods to set the next state to execute
-- Appliance 
-  - CentOS 7.1
-  - Apache 2.4
-  - thin => puma
-  - Build environment virtualized
-- Core Changes
-  - Reworked report serialization for Rails 4.2
-  - Replication: Added Diagnostics
+
+### SmartState
+- Support for VMware VDDK version 6
+
+### Security
+- Authentication
+  - External Auth to AD web ui login & SSO - Manual configuration
+  - External Auth to LDAP - Manual configuration
+- Supporting Additional External Authentications
+  - Appliance tested with 2-Factor Authentication with FreeIPA >= 4.1.0
+
+### Appliance
+- PostgreSQL 9.4.1
+- CentOS 7.1
+- Apache 2.4
+- jQuery 1.9.1
+- Changed file system from ext4 to xfs  
+- Added support for systemctl
+- Support for running on Puma, but default is Thin
+- Reworked report serialization for Rails 4.2
+- Replication: Added Diagnostics
 - Appliance Console
-  - Standard login: type root (not admin)
-  - Standard bash: type appliance_console
+ - Standard login: type root (not admin)
+ - Standard bash: type appliance_console   
 - GitHub Repository
-  - vmdb rerooted to look like a Rails app
-  - lib moved into gems/pending
-  - Build and system directories extracted to new repositories
+ - vmdb rerooted to look like a Rails app
+ - lib moved into gems/pending
+ - Build and system directories extracted to new repositories
+- Extracted C code to external gems
+ - MiqLargeFileLinux => [large\_file\_linux]( https://github.com/ManageIQ/large_file_linux) gem
+ - MiqBlockDevOps => [linux\_block\_device](https://github.com/ManageIQ/linux_block_device) and [memory\_buffer](https://github.com/ManageIQ/memory_buffer) gems
+ - MiqMemory => [memory\_buffer](https://github.com/ManageIQ/memory_buffer) gem
+ - SlpLib => [slp](https://github.com/ManageIQ/slp) gem  
+- Gem updates
+  - Upgraded rufus scheduler to version 3
+  - Upgraded to latest net-sftp
+  - Upgraded to latest net-ssh  
+  - Upgraded to latest ruby-progressbar
+  - Upgraded to latest snmp    
 
-
-### [Removed](https://github.com/ManageIQ/manageiq/issues?q=milestone%3A%22Sprint+26+Ending+July+13%2C+2015%22+label%3A%22technical+debt%22)
+### Removed
 
 - Core: SOAP server side has been removed
 
-## Sprint 25 end 2015-06-22
-
-### [Added](https://github.com/ManageIQ/manageiq/issues?q=milestone%3A%22Sprint+25+Ending+June+22%2C+2015%22+label%3Aenhancement)
-
-- Container Integration: Kubernetes Events
-- Amazon: Added M4 and t2.large instance types
-- UI: Added donut charts
-
-### [Changed](https://github.com/ManageIQ/manageiq/issues?q=milestone%3A%22Sprint+25+Ending+June+22%2C+2015%22+label%3Aenhancement)
-
-- Automate: Automate Server Role enabled by default
-- Service Dialogs: Auto-refresh for dynamic dialog fields
-- UI: Upgraded to jQuery 1.9.1
-- UI: Increased chart responsiveness
-- Appliance: Extracting C code to external gems
-  - MiqLargeFileLinux => [large\_file\_linux]( https://github.com/ManageIQ/large_file_linux) gem
-  - MiqBlockDevOps => [linux\_block\_device](https://github.com/ManageIQ/linux_block_device) and [memory\_buffer](https://github.com/ManageIQ/memory_buffer) gems
-  - MiqMemory => [memory\_buffer](https://github.com/ManageIQ/memory_buffer) gem
-  - SlpLib => [slp](https://github.com/ManageIQ/slp) gem
-
-## Sprint 24 end 2015-06-01
-
-### [Added](https://github.com/ManageIQ/manageiq/issues?q=milestone%3A%22Sprint+24+Ending+June+1%2C+2015%22+label%3Aenhancement)
-
-- Kubernetes inventory 
-  - Replicators
-  - Routes
-  - Projects
-- OpenShift Provider
-- OpenStack: Better name for AMQP binding queues
-- Provisioning
-  - Enabled SCVMM Auto placement
-  - Provision dialog field validation for non-required fields
-
-### [Fixed](https://github.com/ManageIQ/manageiq/issues?q=milestone%3A%22Sprint+24+Ending+June+1%2C+2015%22+label%3Abug)
-
-Notable fixes include:
-- Provisioning: Fixed unique names for provisioned VMs when ordered through a service
+### Notable Fixes and Changes
+- RHEVM SmartState Analysis issues.
+  - Fix for RHEV 3.5 - ovf file no longer on NFS share.
+  - Fix for NFS permission problem - uid changed when opening files on share.
+  - Fix for environments with both, NFS and LUN based storage.
+- SmartState Refactoring
+   - Refactored the middle layer of the SmartState Analysis stack.
+   - Common code no longer based on VmOrTemplate models.
+   - Facilitate the implementation of SmartState for things that are not like VMs.
+   - Enabler for Container SmartState
+- Appliance: Cloud-init reported issues have been addressed.
+- Automate: VMware snapshot from automate fixed - memory parameter added
+- REST API Source refactoring: app/helpers/api\_helper/ → app/controllers/api_controller
+- Replication: Added heartbeating to child worker process for resiliency
+- Providers
+ - Moved provider event filters into the database (blacklisted events)
+ - SCVMM Inventory Performance Improvement
+ - Fixed caching for OpenStack Event Monitors
+- Provisioning: Fixed unique names for provisioned VMs when ordered through a service  
 - UI
+  - Technical Debt Progress
+    - Remaining TreePresenter/ExplorerPresenter conversions in progress
+    - Switched from Patternfly LESS to SASS  
+    - Replaced DHTMLXCombo controls
+    - Replaced DHTMLXCalendar controls
+  - Patternfly styling
+  - Schedule Editor updated to use Angular and RESTful routes
+  - Increased chart responsiveness
   - Fixes for Japanese I18n support
   - Fixed alignment of Foreman explorer RBAC features with the UI
-
-## Sprint 23 end 2015-05-11
-
-### [Added](https://github.com/ManageIQ/manageiq/issues?q=milestone%3A%22Sprint+23+Ending+May+11%2C+2015%22+label%3Aenhancement)
-
-- Foreman
-  - Filtering of available Configuration Profiles based on selected Configured Systems in provisioning dialog
-  - Exposed additional properties to reporting
-
-### [Changed](https://github.com/ManageIQ/manageiq/issues?q=milestone%3A%22Sprint+23+Ending+May+11%2C+2015%22+label%3Aenhancement) 
-
-- UI: Foreman Enhancements
 
 # Botvinnik Release
 
@@ -121,7 +170,7 @@ Notable fixes include:
   - Provisioning from template, Kerberos Authentication
   - Virtual DVD drives for templates
 - Kubernetes
-  - UI updates including Refresh button 
+  - UI updates including Refresh button
   - Inventory Collection
   - EMS Refresh scheduling
 - Foreman
@@ -167,7 +216,7 @@ Notable fixes include:
  - Enabled Reporting / Tagging.
  - Improved rollback error message in UI.
  - Collect Stack Resource name and status reason message.
-     
+
 ### Provisioning
 - Heat Orchestration provisioning through services
 - Foreman
@@ -200,14 +249,14 @@ Notable fixes include:
 - Replaced many legacy Prototype calls with jQuery equivalents
 - Tagging support and toolbars on list views
 
-### Rest API 
+### REST API
 - Total parity with SOAP API. SOAP API is now deprecated and will be removed in an upcoming release.
 - Foundational
   - Virtual attribute support  
   - Id/Href separation- Enhancement to /api/providers to support new provider class
 - Providers CRUD
 - Refresh via /api/providers
-- Tag Collection /api/tags 
+- Tag Collection /api/tags
 - Tag Management (assign and unassign to/from resources)
 - Policy Management: Query policy and policy profiles conditions
 - VM Management
@@ -218,9 +267,9 @@ Notable fixes include:
 - Software sub-collection /api/vms/#/software
 - Support for external authentication (httpd) against an IPA server.  
 
-### Automate 
+### Automate
 - Enhanced UI import to allow granularity down to the namespace.
-- Cloud Objects exposed to Automate. 
+- Cloud Objects exposed to Automate.
 - Allow Automate methods to override or extend parameters passed to provider by updating the clone_options during provisioning.  
 - New service model for CloudResourceQuota.
 - Exposed relationships through EmsCloud and CloudTenant models.
@@ -256,12 +305,12 @@ Notable fixes include:
 - Dialog seeding for imports
 - Service provisioning request overrides
 
-### IPv6 
+### IPv6
 - Allow IPv6 literals in VMware communication by upgrading httpclient
 - Allow IPv6 literals in RHEVM/ovirt communication by fixing and upgrading rest-client and ruby 2.0  
 - Fixed URI building within ManageIQ to wrap/unwrap IPv6 literals as needed
 
-### Security 
+### Security
 - Lock down [POODLE](http://en.wikipedia.org/wiki/POODLE) attacks.
 - Support SSL for OpenStack
   - Deals with different ways to configure SSL for OpenStack
@@ -273,7 +322,7 @@ Notable fixes include:
 - Fix_auth command tool can now update passwords in database.yml
 - Better messaging around overwriting database encryption keys
 - Make memcached listen on loopback address, not all addresses
-- Migrate empty memcache_server_opts to bind on localhost by default 
+- Migrate empty memcache_server_opts to bind on localhost by default
 
 ### Appliance
 - Rake task to allow a user to replicate all pending backlog before upgrading.
@@ -290,14 +339,14 @@ Notable fixes include:
 - Iptables configured via kickstart
 - Replaced authentication_(valid|invalid)? with (has|missing)_credentials?
 - Stop/start apache if user_interface and web_services are inactive/active
-- Rails 
+- Rails
   - Moved to Rails 4 finders.
   - Removed patches against the logger classes.
   - Removed assumptions that associations are eagerly loaded.
   - Updated  preloader patches against Rails
   - Updated virtual column / reflection code to integrate with Rails
   - Started moving ActiveRecord 2.3 hash based finders to Relation based finders
-  - Backports and refactorings on master for Rails 4 support 
+  - Backports and refactorings on master for Rails 4 support
   - Rails server listen on loopback when running appliance in production mode
   - Bigint id columns
   - Memoist gem replaced deprecated ActiveSupport::Memoizable
@@ -312,7 +361,7 @@ Notable fixes include:
 
 ## Removed
 
-- SmartProxy: 
+- SmartProxy:
   - Removed from UI
   - Directory removed
 - IP Address Form Field: Removed from UI (use Hostname)
@@ -334,7 +383,7 @@ Notable fixes include:
 
 ## Notable Fixes and Changes
 
-- Provisioning 
+- Provisioning
   - Fixed duplicate VM name generation issue during provisioning.
   - Provisioning fix for non-admin OpenStack tenants.
   - Provisioning fix to deal with multiple security groups with the same name.
@@ -347,10 +396,10 @@ Notable fixes include:
  - Fixed issue where deleting an EMS and adding it back would cause refresh failure.
  - EventEx is now disabled by default to help prevent event storms
  - Fixed "High CPU usage" due to continually restarting workers when a provider is unreachable or password is invalid.
- - RHEVM/oVirt: 
+ - RHEVM/oVirt:
     - Ignore user login failed events to prevent event flooding.
     - Discovery fixed to eliminate false positives
- - SCVMM: Fixed refresh when Virtual DVD drives are not present. 
+ - SCVMM: Fixed refresh when Virtual DVD drives are not present.
  - OpenStack
        -  Image pagination issue where all of the images would not be collected.
        -  OpenStack provider will gracefully handle 404 errors.
@@ -376,8 +425,7 @@ Notable fixes include:
   - Don't collect cpus/memory available unless you have usage.
   - Clean up of CPU details in UI
  - SMTP domain length updated to match SMTP host length
- - Fleecing: Fixed handling of nil directory entries and empty files 
+ - Fleecing: Fixed handling of nil directory entries and empty files
  - Fixed issue where deleting a cluster or host tries to delete all policy_events, thus never completing when there are millions of events.
  - Fixed inheriting tags from resource pool.
  - UI: Fixed RBAC / Feature bugs
- 

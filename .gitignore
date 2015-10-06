@@ -18,10 +18,12 @@
 /vmdb/
 BUILD
 ca/root
+certs/v2_key
 coverage/
 Gemfile.dev.rb
 Gemfile.lock*
 GUID
+openstack_environments.yml
 nbproject/
 private_test
 REGION
@@ -163,3 +165,6 @@ spa_ui/self_service/reports
 
 ### Build directory ###
 public/self_service
+
+### .gitignore overrides ###
+!spa_ui/self_service/**/region

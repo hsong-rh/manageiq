@@ -1,7 +1,7 @@
 describe('update-drop-down-for-timer initialization', function() {
   var $scope, form, model;
   beforeEach(module('ManageIQ.angularApplication'));
-  beforeEach(inject(function($compile, $rootScope) {
+  beforeEach(inject(function($compile, $rootScope, miqService) {
     $scope = $rootScope;
     var element = angular.element(
       '<form name="angularForm">' +
@@ -13,9 +13,8 @@ describe('update-drop-down-for-timer initialization', function() {
     $scope.timer_items = [{text:'Week', value: 0},
                           {text:'2 Weeks', value: 1}];
 
-    $scope.miqService = { miqFlashClear: function (){} };
     $scope.scheduleModel = {};
-    spyOn($scope.miqService, 'miqFlashClear');
+    spyOn(miqService, 'miqFlashClear');
     elem = $compile(element)($rootScope);
     form = $scope.angularForm;
     model = $scope.scheduleModel;
@@ -26,7 +25,7 @@ describe('update-drop-down-for-timer initialization', function() {
       $scope.timerTypeOnce = false;
       model.timer_value = 0;
       $timeout.flush();
-      expect(elem[0][2].className).toMatch(/selectpicker/);
+      expect(elem[0][1].className).toMatch(/bs-select-hidden/);
       expect(elem[0][2].className).toMatch(/btn-default/);
       expect(elem[0][2].parentElement.attributes['style']['value']).not.toMatch(/display: none/);
       expect(form.timer_value.$viewValue).toBe(0);

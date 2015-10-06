@@ -27,7 +27,7 @@ describe 'routes for ServiceController' do
   describe "#ownership_field_changed" do
     it "routes with POST" do
       expect(post("/service/ownership_field_changed"))
-      .to route_to("service#ownership_field_changed")
+        .to route_to("service#ownership_field_changed")
     end
   end
 
@@ -49,10 +49,9 @@ describe 'routes for ServiceController' do
     end
   end
 
-  describe "#retire_date_changed" do
-    it "routes with POST" do
-      expect(post("/service/retire_date_changed"))
-      .to route_to("service#retire_date_changed")
+  describe "#retirement_info" do
+    it "routes with GET" do
+      expect(get("/service/retirement_info")).to route_to("service#retirement_info")
     end
   end
 
@@ -65,7 +64,7 @@ describe 'routes for ServiceController' do
   describe "#service_form_field_changed" do
     it "routes with POST" do
       expect(post("/service/service_form_field_changed"))
-      .to route_to("service#service_form_field_changed")
+        .to route_to("service#service_form_field_changed")
     end
   end
 
@@ -84,7 +83,7 @@ describe 'routes for ServiceController' do
   describe "#tag_edit_form_field_changed" do
     it "routes with POST" do
       expect(post("/service/tag_edit_form_field_changed"))
-      .to route_to("service#tag_edit_form_field_changed")
+        .to route_to("service#tag_edit_form_field_changed")
     end
   end
 
